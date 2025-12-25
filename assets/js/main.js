@@ -8,58 +8,84 @@ $(document).ready(function () {
 
     // ===== BLOCK KEYS (OPTIONAL) =====
     document.onkeydown = function (e) {
-        if (e.keyCode == 123) return false;
+        if (e.keyCode === 123) return false;
         if (e.ctrlKey && e.shiftKey) return false;
-        if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
+        if (e.ctrlKey && e.keyCode === 'U'.charCodeAt(0)) return false;
     };
 
-    // ===== RANDOM STYLE =====
-    var styles = [
-        "./assets/css/a-c-c1.css",
-        "./assets/css/a-c-c2.css",
-        "./assets/css/a-c-c3.css",
-        "./assets/css/a-c-c4.css",
-        "./assets/css/a-c-c5.css",
-        "./assets/css/a-c-c6.css"
-    ];
-    var style = styles[Math.floor(Math.random() * styles.length)];
-    $('<link/>', { rel: 'stylesheet', href: style }).appendTo('head');
+    // ===== RANDOM STYLE (SAFE) =====
+    try {
+        var styles = [
+            "./assets/css/a-c-c1.css",
+            "./assets/css/a-c-c2.css",
+            "./assets/css/a-c-c3.css",
+            "./assets/css/a-c-c4.css",
+            "./assets/css/a-c-c5.css",
+            "./assets/css/a-c-c6.css"
+        ];
+        var style = styles[Math.floor(Math.random() * styles.length)];
+        $('<link/>', { rel: 'stylesheet', href: style }).appendTo('head');
+    } catch (e) {
+        console.log("Style load skipped");
+    }
 
     // ===== PLATFORM SELECT =====
     function fixplatformBox(el) {
         $('.sps-i').removeClass('active');
         el.addClass('active');
 
-        if (el.hasClass('sps-i-1')) { jsp = 'Windows'; jsp_i = '<i class="fab fa-windows"></i>'; }
-        if (el.hasClass('sps-i-4')) { jsp = 'Android'; jsp_i = '<i class="fab fa-android"></i>'; }
-        if (el.hasClass('sps-i-5')) { jsp = 'iOS'; jsp_i = '<i class="fab fa-apple"></i>'; }
+        if (el.hasClass('sps-i-1')) {
+            jsp = 'Windows';
+            jsp_i = '<i class="fab fa-windows"></i>';
+        }
+        if (el.hasClass('sps-i-4')) {
+            jsp = 'Android';
+            jsp_i = '<i class="fab fa-android"></i>';
+        }
+        if (el.hasClass('sps-i-5')) {
+            jsp = 'iOS';
+            jsp_i = '<i class="fab fa-apple"></i>';
+        }
     }
 
-    $('.sps-i').click(function () {
+    $('.sps-i').on('click', function () {
         fixplatformBox($(this));
     });
 
-    // ===== STEP 1 =====
-    $('#stb-ee-f').click(function () {
+    // ===== STEP 1 : PROCEED =====
+    $('#stb-ee-f').on('click', function () {
 
-        if ($('#epu-u-i').val() === '' || jsp === '') return;
+        // validation
+        if ($('#epu-u-i').val().trim() === '' || jsp === '') {
+            return;
+        }
 
-        peu = $('#epu-u-i').val();
+        peu = $('#epu-u-i').val().trim();
 
-        $('.b-s-c-w').fadeOut(function () {
-            $('.i-w-b-r-t-y').fadeIn();
+        // UI transition
+        $('.b-s-c-w').fadeOut(300, function () {
+            $('.i-w-b-r-t-y').fadeIn(300);
             $('#f-t-f-p-t-u-v').text(peu);
             $('#f-t-f-p-t-p-v').html(jsp_i);
         });
 
-        // ===== FAKE DELAY =====
+        // ===== TRIGGER CPA LOCKER (SAFE) =====
         setTimeout(function () {
-            // 🔥 هنا كيطلق الكونتر لوكر
             if (typeof CPABuildLock === "function") {
                 CPABuildLock();
             }
-        }, 1500);
-
+        }, 1200);
     });
 
+});
+
+/* ===== FORCE REMOVE LOADER (FINAL FIX) ===== */
+$(window).on('load', function () {
+    setTimeout(function () {
+        if ($('.imjaprl').length) {
+            $('.imjaprl').fadeOut(400, function () {
+                $(this).remove();
+            });
+        }
+    }, 800);
 });
