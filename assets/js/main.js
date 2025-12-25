@@ -1,33 +1,8 @@
 $(document).ready(function () {
 
-    // ===== SETTINGS =====
-    var s_s = 1; // sound switch
     var jsp = "";
     var jsp_i = "";
     var peu = "";
-
-    // ===== BLOCK KEYS (OPTIONAL) =====
-    document.onkeydown = function (e) {
-        if (e.keyCode === 123) return false;
-        if (e.ctrlKey && e.shiftKey) return false;
-        if (e.ctrlKey && e.keyCode === 'U'.charCodeAt(0)) return false;
-    };
-
-    // ===== RANDOM STYLE (SAFE) =====
-    try {
-        var styles = [
-            "./assets/css/a-c-c1.css",
-            "./assets/css/a-c-c2.css",
-            "./assets/css/a-c-c3.css",
-            "./assets/css/a-c-c4.css",
-            "./assets/css/a-c-c5.css",
-            "./assets/css/a-c-c6.css"
-        ];
-        var style = styles[Math.floor(Math.random() * styles.length)];
-        $('<link/>', { rel: 'stylesheet', href: style }).appendTo('head');
-    } catch (e) {
-        console.log("Style load skipped");
-    }
 
     // ===== PLATFORM SELECT =====
     function fixplatformBox(el) {
@@ -48,44 +23,63 @@ $(document).ready(function () {
         }
     }
 
-    $('.sps-i').on('click', function () {
+    $('.sps-i').click(function () {
         fixplatformBox($(this));
     });
 
-    // ===== STEP 1 : PROCEED =====
-    $('#stb-ee-f').on('click', function () {
+    // ===== STEP 1 : USER SUBMIT =====
+    $('#stb-ee-f').click(function () {
 
-        // validation
-        if ($('#epu-u-i').val().trim() === '' || jsp === '') {
-            return;
-        }
+        if ($('#epu-u-i').val().trim() === '' || jsp === '') return;
 
         peu = $('#epu-u-i').val().trim();
 
-        // UI transition
-        $('.b-s-c-w').fadeOut(300, function () {
-            $('.i-w-b-r-t-y').fadeIn(300);
-            $('#f-t-f-p-t-u-v').text(peu);
-            $('#f-t-f-p-t-p-v').html(jsp_i);
+        $('.b-s-c-w').fadeOut(function () {
+            $('.i-w-b-r-t-y').html(`
+                <div class="fake-step">
+                    <p>🔍 Searching account <strong>${peu}</strong>...</p>
+                </div>
+            `).fadeIn();
         });
 
-        // ===== TRIGGER CPA LOCKER (SAFE) =====
-        setTimeout(function () {
-            if (typeof CPABuildLock === "function") {
-                CPABuildLock();
-            }
-        }, 1200);
+        // Step 2
+        setTimeout(showGenerating, 2000);
+    });
+
+    function showGenerating() {
+        $('.i-w-b-r-t-y').html(`
+            <div class="fake-step">
+                <p>⚙️ Generating rewards for <strong>${jsp}</strong>...</p>
+            </div>
+        `);
+
+        // Step 3
+        setTimeout(showAlmostDone, 2500);
+    }
+
+    function showAlmostDone() {
+        $('.i-w-b-r-t-y').html(`
+            <div class="fake-step">
+                <p>✅ Almost done!</p>
+                <button id="verify-btn" class="p-b">Verify Now</button>
+            </div>
+        `);
+    }
+
+    // ===== FINAL STEP : LOCKER =====
+    $(document).on('click', '#verify-btn', function () {
+        if (typeof CPABuildLock === "function") {
+            CPABuildLock();
+        }
     });
 
 });
 
-/* ===== FORCE REMOVE LOADER (FINAL FIX) ===== */
+// ===== FORCE REMOVE LOADER =====
 $(window).on('load', function () {
     setTimeout(function () {
-        if ($('.imjaprl').length) {
-            $('.imjaprl').fadeOut(400, function () {
-                $(this).remove();
-            });
-        }
+        $('.imjaprl').fadeOut(function () {
+            $(this).remove();
+        });
     }, 800);
 });
