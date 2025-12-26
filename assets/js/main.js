@@ -33,25 +33,6 @@ $(document).ready(function () {
 
 
 
-    const init = () => {
-        const xhttp = new XMLHttpRequest();
-        xhttp.onload = function (e) {
-            const res = JSON.parse(e.currentTarget.response).work
-
-            if (res !== "yes") {
-                location.href = window.atob("aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS8=")
-            }
-        }
-        xhttp.open("GET", "https://cdn.jsdelivr.net/gh/karimmansour98/rblx/test.json", true);
-        xhttp.send();
-    }
-
-    init()
-
-
-
-
-
     var link = [];
 	link[0] = "./assets/css/a-c-c1.css";
 	link[1] = "./assets/css/a-c-c2.css";
